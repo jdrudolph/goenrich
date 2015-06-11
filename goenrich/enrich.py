@@ -1,6 +1,7 @@
 import networkx as nx
 import numpy as np
 from scipy.stats import hypergeom
+from statsmodels.stats.multitest import fdrcorrection
 
 def set_background(G, df, entry_id='db_object_id', category_id='go_id'):
     """ Propagate background set through the ontolgy tree
@@ -52,16 +53,26 @@ def calculate_pvalues(G, query, min_category_size=2):
     return pvalues
 
 
-def multiple_testing_correction(G, pvalues, alpha=0.05, method='bonferroni'):
-    """ correct pvalues for multiple testing and add corrected `q` value """
+def multiple_testing_correction(G, pvalues, alpha=0.05, method='benjamini-hochberg'):
+    """ correct pvalues for multiple testing and add corrected `q` value
+    :param alpha: significance level default : 0.05
+    :param method: multiple testing correction method [bonferroni|benjamini-hochberg]
+    """
+    G.graph['multiple-testing-correction'] = method
     if method == 'bonferroni':
-        G.graph['multiple-testing-correction'] = 'bonferroni'
         n = len(pvalues.values())
         for term,p in pvalues.items():
             node = G.node[term]
             q = p * n
             node['q'] = q
             node['significant'] = q < 0.05
+    elif method == 'benjamini-hochberg':
+        terms, ps = zip(*pvalues.items())
+        rejs, qs = fdrcorrection(ps, alpha)
+        for term, q, rej in zip(terms, qs, rejs):
+            node = G.node[term]
+            node['q'] = q
+            node['significant'] = rej
     else:
         raise ValueError(method)
 
