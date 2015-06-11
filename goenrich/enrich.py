@@ -20,6 +20,7 @@ def set_background(G, df, entry_id='db_object_id', category_id='go_id'):
                 annotate(n, entries)
 
 def calculate_pvalues(G, query):
+    """ calculate pvalues for all categories in the graph """
     pvalues = {}
     N = len(query)
     for i in G:
@@ -46,6 +47,7 @@ def calculate_pvalues(G, query):
 
 
 def multiple_testing_correction(G, pvalues, alpha=0.05, method='bonferroni'):
+    """ correct pvalues for multiple testing and add corrected `q` value """
     if method == 'bonferroni':
         G.graph['multiple-testing-correction'] = 'bonferroni'
         n = len(pvalues.values())
@@ -58,40 +60,6 @@ def multiple_testing_correction(G, pvalues, alpha=0.05, method='bonferroni'):
         raise ValueError(method)
 
 def filter_significant(G, alpha=0.05):
+    """ get significant terms according to q-values at level alpha """
     sig = [n for n in G if G.node[n].get('q', 1) < alpha]
     return sig
-
-
-def export_graphviz(G, sig, path):
-    nodes = set([])
-    for n in sig:
-        namespace = G.node[n]['namespace']
-        root = G.graph['roots'][namespace]
-        for path in nx.simple_paths.all_simple_paths(G, n, root):
-            nodes.update(path)
-    R = G.subgraph(nodes).reverse()
-    R.graph = {'rankdir' : 'TB'}
-    for n in R:
-        node = R.node[n]
-        attr = {}
-        attr['shape'] = 'record'
-        attr['color'] = 'red' if node['significant'] else 'black'
-        attr['label'] = """{name}
-        {x} / {n} genes
-        q = {q:.5f}""".format(name=node['name'], q=node['q'], x=node['x'], n=node['n'])
-        R.node[n] = attr
-    A = nx.to_agraph(R)
-    A.write(path)
-
-def test():
-    import src.obo
-    import src.goa
-
-    background = src.goa.read('db/gene_association.goa_ref_human.gz')
-    G = src.obo.graph('db/go-basic.obo')
-    query = set(background['db_object_id'].unique()[:20])
-    set_background(G, background)
-    pvalues = calculate_pvalues(G, query)
-    multiple_testing_correction(G, pvalues)
-    sig = filter_significant(G)
-    R = export_graphviz(G, sig, 'test.dot')

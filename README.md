@@ -1,4 +1,4 @@
-# enrich
+# goenrich
 Convenient GO enrichments from python. For use in `python` projects.
 
 1. Builds the GO-ontology graph
@@ -9,15 +9,14 @@ Convenient GO enrichments from python. For use in `python` projects.
 
 ## Installation
 
-Download annotations from `geneontology.org`
+Install package from pypi and download annotations from `geneontology.org`
 
 ```shell
+pip install goenrich
 mkdir db
 wget http://purl.obolibrary.org/obo/go/go-basic.obo -O db/go-basic.obo
 wget http://geneontology.org/gene-associations/gene_association.goa_ref_human.gz -O db/gene_association.goa_ref_human.gz
 ```
-
-Clone the repository and add the path to you `$PYTHONPATH`. A package configuration will follow soon.
 
 ## Run GO enrichment
 
