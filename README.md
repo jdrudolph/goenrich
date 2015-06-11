@@ -50,8 +50,14 @@ dot -Tpdf test.dot > test.pdf
 
 ### Parameters
 
+Some parameters to consider for analysis
 ```
-enrich.calculate_pvalues: min_category_size = 2
+enrich.calculate_pvalues:
+  min_category_size = 2
+
+enrich.multiple_testing_correction:
+  alpha = 0.05
+  method = ['benjamin-hochberg', 'bonferroni']
 ```
 
 # Licence

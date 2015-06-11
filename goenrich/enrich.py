@@ -77,7 +77,7 @@ def multiple_testing_correction(G, pvalues, alpha=0.05, method='benjamini-hochbe
     else:
         raise ValueError(method)
 
-def filter_significant(G, alpha=0.05):
-    """ get significant terms according to q-values at level alpha """
-    sig = [n for n in G if G.node[n].get('q', 1) < alpha]
+def filter_significant(G):
+    """ get significant terms"""
+    sig = [n for n in G if G.node[n].get('significant', False)]
     return sig
