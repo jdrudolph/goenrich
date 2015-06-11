@@ -19,8 +19,12 @@ def set_background(G, df, entry_id='db_object_id', category_id='go_id'):
             for n in path:
                 annotate(n, entries)
 
-def calculate_pvalues(G, query):
-    """ calculate pvalues for all categories in the graph """
+def calculate_pvalues(G, query, min_category_size=2):
+    """ calculate pvalues for all categories in the graph
+
+    :param min_category_size: categories smaller than this number are ignored, default : 2
+    :returns: dictionary of term : pvalue
+    """
     pvalues = {}
     N = len(query)
     for i in G:
@@ -29,6 +33,8 @@ def calculate_pvalues(G, query):
         if background is None:
             continue
         n = len(background)
+        if n < min_category_size:
+            continue
         node['n'] = n
         hits = query.intersection(background)
         x = len(hits)
