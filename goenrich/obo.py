@@ -24,8 +24,6 @@ def term(f, G):
             key,value = line.split('!')[0].strip().split(': ', 1)
             attr[key] = value
 
-filename = 'db/go-basic.obo'
-
 def graph(filename):
     """ Generate ontology graph """
     G = nx.DiGraph(roots={})

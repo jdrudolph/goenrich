@@ -1,11 +1,17 @@
 from setuptools import setup
 
 def readme():
-    with open('README.md') as f:
-        return f.read()
+    try:
+        from pypandoc import convert
+        return convert('README.md', 'rst', format='markdown_github')
+    except ImportError:
+        import warnings
+        warnings.warn('could not import pypandoc -- not converting README to rst', ImportWarning)
+        with open('README.md') as f:
+            return f.read()
 
 setup(name='goenrich',
-      version='0.2.1',
+      version='0.2.3',
       description='GO enrichment with python -- pandas meets networkx',
       long_description=readme(),
       classifiers=[
