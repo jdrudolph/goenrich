@@ -46,7 +46,7 @@ Generate `pdf` using graphviz
 dot -Tpdf test.dot > test.pdf
 ```
 
-![Example output](https://cloud.githubusercontent.com/assets/2606663/8106301/ab9ec4e8-1048-11e5-8ea0-63eb77db08d9.png)
+![Example output](https://cloud.githubusercontent.com/assets/2606663/8107738/435fba70-1054-11e5-9ef5-252bbcec65e8.png)
 
 ### Parameters
 
