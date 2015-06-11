@@ -1,5 +1,11 @@
 # enrich
-GO enrichments
+Convenient GO enrichments from python. For use in `python` projects.
+
+1. Builds the GO-ontology graph
+2. Propagates GO-annotations up the graph
+3. Performs enrichment test for all categories
+4. Performs multiple testing correction
+5. Allows for export to `graphviz` for visualization
 
 ## Installation
 
@@ -10,6 +16,8 @@ mkdir db
 wget http://purl.obolibrary.org/obo/go/go-basic.obo -O db/go-basic.obo
 wget http://geneontology.org/gene-associations/gene_association.goa_ref_human.gz -O db/gene_association.goa_ref_human.gz
 ```
+
+Clone the repository and add the path to you `$PYTHONPATH`. A package configuration will follow soon.
 
 ## Run GO enrichment
 
