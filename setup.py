@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='goenrich',
-      version='0.2',
+      version='0.2.1',
       description='GO enrichment with python -- pandas meets networkx',
       long_description=readme(),
       classifiers=[
@@ -15,7 +15,7 @@ setup(name='goenrich',
           'Programming Language :: Python :: 3.4',
           'Topic :: Scientific/Engineering :: Bio-Informatics',
           'Topic :: Software Development :: Libraries'],
-      url='http://github.com/jdrudolph/enrich',
+      url='http://github.com/jdrudolph/goenrich',
       author='Jan Daniel Rudolph',
       author_email='jan.daniel.rudolph@gmail.com',
       license='MIT',
