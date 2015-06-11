@@ -58,7 +58,8 @@ def multiple_testing_correction(G, pvalues, alpha=0.05, method='benjamini-hochbe
     :param alpha: significance level default : 0.05
     :param method: multiple testing correction method [bonferroni|benjamini-hochberg]
     """
-    G.graph['multiple-testing-correction'] = method
+    G.graph.update({ 'multiple-testing-correction': method,
+        'alpha' : alpha })
     if method == 'bonferroni':
         n = len(pvalues.values())
         for term,p in pvalues.items():
