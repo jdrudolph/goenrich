@@ -1,13 +1,26 @@
 import networkx as nx
+import pandas as pd
+
+import goenrich
+
+def to_frame(G, node_filter = lambda node: 'p' in node and node['x'] > 2):
+    """ export enrichment graph to pd.DataFrame
+
+    :param node_filter: decision function based with access to the node data dictionary
+    """
+    return pd.DataFrame([
+        {k: v for d in [{'term':term}, node] for k,v in d.items()}
+        for term, node in G.nodes(data=True) if node_filter(node)])
 
 def to_graphviz(G, sig, filepath, graph_label=None):
     """ export graph of signifcant findings to dot file.
-    A pdf can be generated from the commandline using graphviz
+    A png can be generated from the commandline using graphviz
 
-    dot -Tpdf filpath.dot > filepath.pdf
+    dot -Tpng filpath.dot > filepath.png
 
     :param graph_label: give custom graph label otherwise
-        additional information will be printed
+        additional information will be printed.
+        For empty label pass graph_label=''.
     """
     nodes = set([])
     for n in sig:

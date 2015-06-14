@@ -3,6 +3,9 @@ from unittest import TestCase
 import goenrich
 
 class TestRead(TestCase):
+    def test_ontology(self):
+        G = goenrich.obo.graph('db/go-basic.obo')
+
     def test_goa(self):
         background = goenrich.read.goa('db/gene_association.goa_ref_human.gz')
 

@@ -5,7 +5,7 @@ Convenient GO enrichments from python. For use in `python` projects.
 2. Propagates GO-annotations up the graph
 3. Performs enrichment test for all categories
 4. Performs multiple testing correction
-5. Allows for export to `graphviz` for visualization
+5. Allows for export to `pandas` for processing and `graphviz` for visualization
 
 Supported ids: `Uniport ACC`, `Entrez GeneID`
 
@@ -43,9 +43,11 @@ query = set(background[entry_id].unique()[:20])
 goenrich.enrich.set_background(G, background)
 
 # run enrichment analysis, correct for multiple testing
-# and export to graphviz
 pvalues = goenrich.enrich.calculate_pvalues(G, query, entry_id, category_id)
 goenrich.enrich.multiple_testing_correction(G, pvalues)
+
+# export to pandas or graphviz
+df = goenrich.export.to_frame(G)
 sig = goenrich.enrich.filter_significant(G)
 R = goenrich.export.to_graphviz(G, sig, 'test.dot')
 ```
