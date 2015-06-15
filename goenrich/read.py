@@ -27,7 +27,7 @@ def goa(filename, experimental=True, **kwds):
         retain_mask = result.evidence_code.isin(EXPERIMENTAL_EVIDENCE)
         result.drop(result.index[~retain_mask], inplace=True)
 
-    return 'db_object_id', 'go_id', result
+    return result
 
 
 GENE2GO_COLUMNS = ('tax_id', 'GeneID', 'GO_ID', 'Evidence', 'Qualifier', 'GO_term', 'PubMed', 'Category')
@@ -51,5 +51,5 @@ def gene2go(filename, experimental=True, tax_id=9606, **kwds):
         retain_mask = result.Evidence.isin(EXPERIMENTAL_EVIDENCE)
         result.drop(result.index[~retain_mask], inplace=True)
 
-    return 'GeneID', 'GO_ID', result
+    return result
 

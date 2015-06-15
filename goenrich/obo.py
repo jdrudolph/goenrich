@@ -24,7 +24,7 @@ def term(f, G):
             key,value = line.split('!')[0].strip().split(': ', 1)
             attr[key] = value
 
-def graph(filename):
+def graph(filename, verbose=False):
     """ Generate ontology graph """
     G = nx.DiGraph(roots={})
     i = 0
@@ -38,5 +38,6 @@ def graph(filename):
                     obsolete += 1
             elif line == '': # entire file parsed
                 break
-    print(i, 'terms parsed,', obsolete, 'obsolete ignored')
+    if verbose:
+        print(i, 'terms parsed,', obsolete, 'obsolete ignored')
     return G

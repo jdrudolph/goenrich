@@ -11,11 +11,11 @@ def readme():
             return f.read()
 
 setup(name='goenrich',
-      version='0.4.1',
+      version='1.0.0',
       description='GO enrichment with python -- pandas meets networkx',
       long_description=readme(),
       classifiers=[
-          'Development Status :: 3 - Alpha',
+          'Development Status :: 4 - Beta',
           'Intended Audience :: Science/Research',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 3.4',
