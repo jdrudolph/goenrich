@@ -48,8 +48,7 @@ result = goenrich.enrich.analyze(G, query)
 # the show argument keeps the graph reasonably small
 result = goenrich.enrich.analyze(G, query, gvfile='example.dot', show='top20')
 ```
-The resulting table looks like
-
+The resulting table is:
 
 <table border="1" class="dataframe">
   <thead>
