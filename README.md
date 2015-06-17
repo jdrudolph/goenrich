@@ -71,84 +71,44 @@ The resulting table is:
   </thead>
   <tbody>
     <tr>
-      <th>GO:0051353</th>
-      <td>positive regulation of oxidoreductase activity</td>
+      <th>GO:0044877</th>
+      <td>macromolecular complex binding</td>
       <td>2</td>
-      <td>2.439696e-07</td>
-      <td>0.000028</td>
-      <td>biological_process</td>
-    </tr>
-    <tr>
-      <th>GO:1900274</th>
-      <td>regulation of phospholipase C activity</td>
-      <td>2</td>
-      <td>1.615563e-06</td>
-      <td>0.000088</td>
-      <td>biological_process</td>
-    </tr>
-    <tr>
-      <th>GO:0005524</th>
-      <td>ATP binding</td>
-      <td>4</td>
-      <td>2.325445e-06</td>
-      <td>0.000088</td>
+      <td>3.422658e-02</td>
+      <td>0.034227</td>
       <td>molecular_function</td>
-    </tr>
-    <tr>
-      <th>GO:0010517</th>
-      <td>regulation of phospholipase activity</td>
-      <td>2</td>
-      <td>3.276210e-06</td>
-      <td>0.000093</td>
-      <td>biological_process</td>
-    </tr>
-    <tr>
-      <th>GO:0030145</th>
-      <td>manganese ion binding</td>
-      <td>2</td>
-      <td>4.417262e-06</td>
-      <td>0.000100</td>
-      <td>molecular_function</td>
-    </tr>
-    <tr>
-      <th>GO:0019905</th>
-      <td>syntaxin binding</td>
-      <td>2</td>
-      <td>6.578223e-06</td>
-      <td>0.000105</td>
-      <td>molecular_function</td>
-    </tr>
-    <tr>
-      <th>GO:0055092</th>
-      <td>sterol homeostasis</td>
-      <td>2</td>
-      <td>7.429111e-06</td>
-      <td>0.000105</td>
-      <td>biological_process</td>
-    </tr>
-    <tr>
-      <th>GO:0042632</th>
-      <td>cholesterol homeostasis</td>
-      <td>2</td>
-      <td>7.429111e-06</td>
-      <td>0.000105</td>
-      <td>biological_process</td>
     </tr>
     <tr>
       <th>GO:0000149</th>
       <td>SNARE binding</td>
       <td>2</td>
       <td>1.041071e-05</td>
-      <td>0.000131</td>
+      <td>0.000092</td>
       <td>molecular_function</td>
     </tr>
     <tr>
-      <th>GO:0035639</th>
-      <td>purine ribonucleoside triphosphate binding</td>
-      <td>4</td>
-      <td>1.261282e-05</td>
-      <td>0.000143</td>
-      <td>molecular_function</td>
+      <th>GO:1901700</th>
+      <td>response to oxygen-containing compound</td>
+      <td>2</td>
+      <td>1.088637e-02</td>
+      <td>0.014640</td>
+      <td>biological_process</td>
+    </tr>
+    <tr>
+      <th>GO:0050801</th>
+      <td>ion homeostasis</td>
+      <td>2</td>
+      <td>1.653091e-03</td>
+      <td>0.003393</td>
+      <td>biological_process</td>
+    </tr>
+    <tr>
+      <th>GO:0051353</th>
+      <td>positive regulation of oxidoreductase activity</td>
+      <td>2</td>
+      <td>2.439696e-07</td>
+      <td>0.000010</td>
+      <td>biological_process</td>
     </tr>
   </tbody>
 </table>
@@ -158,7 +118,8 @@ Generate `png` image using graphviz
 ```shell
 dot -Tpng example.dot > example.png
 ```
-![example](https://cloud.githubusercontent.com/assets/2606663/8205439/58c11914-14f9-11e5-8a5a-e34a30e6c1a6.png)
+
+![example](https://cloud.githubusercontent.com/assets/2606663/8212312/a851ba68-1523-11e5-9a6b-d4eaf25fb676.png)
 
 ### Parameters
 
@@ -177,18 +138,22 @@ goenrich.enrich.analyze(G, query, gvfile='example.dot', **go_options)
 
 Here is an overview over the available parmeters
 ```
+read.*:
+  experimental = True # don't consider inferred annotations
+
 enrich.analyze:
   node_filter = lambda node : 'p' in node
   show = 'top20' # works for any 'topNUM'
 
 enrich.calculate_pvalues:
+  min_hit_size = 2
   min_category_size = 3
   max_category_size = 500
-  min_hit_size = 2
+  max_category_depth = 5
 
 enrich.multiple_testing_correction:
   alpha = 0.05
-  method = ['benjamin-hochberg', 'bonferroni']
+  method = 'benjamin-hochberg' # also supported : 'bonferroni'
 
 export.to_frame:
   node_filter = lambda node: True

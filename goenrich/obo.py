@@ -40,4 +40,10 @@ def graph(filename, verbose=False):
                 break
     if verbose:
         print(i, 'terms parsed,', obsolete, 'obsolete ignored')
+
+    Grev = G.reverse()
+    for root in G.graph['roots'].values():
+        G.node[root]['depth'] = 0
+        for n, depth in nx.single_source_shortest_path_length(Grev, root).items():
+            G.node[n]['depth'] = depth
     return G

@@ -60,7 +60,8 @@ def set_background(G, df, entry_id, category_id):
                 node = G.node[n]
                 node['background'] = node['background'].union(entries)
 
-def calculate_pvalues(G, query, min_hit_size=2, min_category_size=3, max_category_size=500, **kwargs):
+def calculate_pvalues(G, query, min_hit_size=2, min_category_size=3,
+        max_category_size=500, max_category_depth=5, **kwargs):
     """ calculate pvalues for all categories in the graph
     
     :param G: ontology graph after background was set
@@ -79,15 +80,16 @@ def calculate_pvalues(G, query, min_hit_size=2, min_category_size=3, max_categor
         for attr in ['query', 'n', 'N', 'hits', 'x', 'p', 'q', 'significant']:
             if attr in node:
                 del node[attr]
-
         background = node.get('background', set([]))
         n = len(background)
-        if (n < min_category_size) or (n > max_category_size):
-            continue
         node['n'] = n
         hits = query_set.intersection(background)
         x = len(hits)
-        if x < min_hit_size:
+        depth = node.get('depth', -1) # depth might not be set due to malformed ontology
+        if ((depth > max_category_depth)
+            or (n < min_category_size)
+            or (n > max_category_size)
+            or (x < min_hit_size)):
             continue
         else:
             node['query'] = query_set
