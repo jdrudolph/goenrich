@@ -36,11 +36,16 @@ def to_graphviz(G, sig, gvfile, graph_label=None, **kwargs):
         node = R.node[n]
         attr = {}
         attr['shape'] = 'record'
-        attr['color'] = 'red' if node['significant'] else 'black'
-        attr['label'] = """{name}
-        {x} / {n} genes
-        q = {q:.5f}""".format(name=node['name'], q=node['q'], x=node['x'], n=node['n'])
+        if 'q' in node:
+            attr['color'] = 'red' if node['significant'] else 'black'
+            attr['label'] = """{name}
+            {x} / {n} genes
+            q = {q:.5f}""".format(name=node['name'], q=node['q'], x=node['x'], n=node['n'])
+        else:
+            attr['color'] = 'black'
+            attr['label'] = """{name}""".format(name=node['name'])
         R.node[n] = attr
+
     A = nx.to_agraph(R)
     if graph_label is not None:
         A.graph_attr['label'] = graph_label

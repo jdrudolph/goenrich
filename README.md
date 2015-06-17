@@ -158,7 +158,7 @@ Generate `png` image using graphviz
 ```shell
 dot -Tpng example.dot > example.png
 ```
-![example](https://cloud.githubusercontent.com/assets/2606663/8166126/8768c052-139e-11e5-8450-db68b19ca95f.png)
+![example](https://cloud.githubusercontent.com/assets/2606663/8205439/58c11914-14f9-11e5-8a5a-e34a30e6c1a6.png)
 
 ### Parameters
 

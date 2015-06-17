@@ -82,7 +82,7 @@ def calculate_pvalues(G, query, min_hit_size=2, min_category_size=3, max_categor
 
         background = node.get('background', set([]))
         n = len(background)
-        if max_category_size < n < min_category_size:
+        if (n < min_category_size) or (n > max_category_size):
             continue
         node['n'] = n
         hits = query_set.intersection(background)
