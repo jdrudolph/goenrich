@@ -1,4 +1,6 @@
 # goenrich
+
+[![Join the chat at https://gitter.im/jdrudolph/goenrich](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jdrudolph/goenrich?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Convenient GO enrichments from python. For use in `python` projects.
 
 1. Builds the GO-ontology graph
