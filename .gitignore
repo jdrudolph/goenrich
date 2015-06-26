@@ -7,7 +7,9 @@ db
 /dist/
 
 /*.egg-info
+/.eggs
 
 __pycache__
 
 example.*
+

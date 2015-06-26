@@ -164,6 +164,12 @@ export.to_graphviz:
   graph_label = None # if None it is replaced by multiple testing info
 ```
 
+# Example
+```bash
+wget http://bioinfo.vanderbilt.edu/webgestalt/example/referenceGenes.txt -o db/referenceGenes.txt
+wget http://bioinfo.vanderbilt.edu/webgestalt/example/interstingGenes.txt -o db/interestingGenes.txt
+```
+
 # Licence
 
 This work is licenced under the MIT licence
