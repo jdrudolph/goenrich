@@ -1,29 +1,11 @@
 from setuptools import setup
 
 def readme():
-    try:
-        from pypandoc import convert
-        _readme = convert('README.md', 'rst', format='markdown_github')
-        lines = []
-        in_table = 0
-        for line in _readme.splitlines():
-            if line == 'The resulting table is:':
-                in_table = 3
-            elif line == '':
-                in_table = in_table - 1
-            if in_table > 0:
-                continue
-            else:
-                lines.append(line)
-        return '\n'.join(lines)
-    except ImportError:
-        import warnings
-        warnings.warn('could not import pypandoc -- not converting README to rst', ImportWarning)
-        with open('README.md') as f:
-            return f.read()
+    with open('README.rst') as f:
+        return f.read()
 
 setup(name='goenrich',
-      version='1.1.1',
+      version='1.2',
       description='GO enrichment with python -- pandas meets networkx',
       long_description=readme(),
       classifiers=[

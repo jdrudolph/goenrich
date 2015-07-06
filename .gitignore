@@ -12,3 +12,7 @@ __pycache__
 *.pkl
 
 example*
+
+docs/_*
+docs/Makefile
+docs/make.bat

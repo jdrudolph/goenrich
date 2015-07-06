@@ -20,7 +20,7 @@ query = set(background['GeneID'].unique()[:20])
 result = goenrich.enrich.analyze(G, query, gvfile='example.dot', show='top20')
 
 # generate html
-result[['name', 'x', 'p', 'q', 'namespace']].head().to_html('example.html')
+result[['name', 'x', 'p', 'q', 'namespace']].head().to_csv('example.csv')
 
 # call to graphviz
 import subprocess
@@ -35,7 +35,7 @@ S = goenrich.goslim.subset(G, 'goslim_goa')
 result_slim = goenrich.enrich.analyze(S, query, gvfile='example_slim.dot', show='top20')
 
 # generate html
-result_slim[['name', 'x', 'p', 'q', 'namespace']].head().to_html('example_slim.html')
+result_slim[['name', 'x', 'p', 'q', 'namespace']].head().to_csv('example_slim.csv')
 
 # call to graphviz
 subprocess.call(['dot', '-Tpng', 'example_slim.dot', '-o', 'example_slim.png'])

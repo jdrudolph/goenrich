@@ -128,6 +128,7 @@ def calculate_pvalues(H, query, min_hit_size=2, min_category_size=3,
 def multiple_testing_correction(G, pvalues, alpha=0.05,
         method='benjamini-hochberg', inplace=False, **kwargs):
     """ correct pvalues for multiple testing and add corrected `q` value
+    
     :param G: ontology graph for which pvalues were calculated
     :param alpha: significance level default : 0.05
     :param method: multiple testing correction method [bonferroni|benjamini-hochberg]

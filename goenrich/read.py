@@ -8,10 +8,10 @@ GENE_ASSOCIATION_COLUMNS = ('db', 'db_object_id', 'db_object_symbol',
 EXPERIMENTAL_EVIDENCE = ('EXP', 'IDA', 'IPI', 'IMP', 'IGI', 'IEP')
 def goa(filename, experimental=True, **kwds):
     """ read go-annotation file
-    :returns:
-        entry_id: protein or gene identifier column
-        category_id: GO term column
-        background: background annotation set
+    
+    :param entry_id: protein or gene identifier column
+    :param category_id: GO term column
+    :param background: background annotation set
     """
     defaults = {'comment' : '!',
             'compression' : 'gzip',
@@ -33,10 +33,10 @@ def goa(filename, experimental=True, **kwds):
 GENE2GO_COLUMNS = ('tax_id', 'GeneID', 'GO_ID', 'Evidence', 'Qualifier', 'GO_term', 'PubMed', 'Category')
 def gene2go(filename, experimental=True, tax_id=9606, **kwds):
     """ read go-annotation file
-    :returns:
-        entry_id: protein or gene identifier column
-        category_id: GO term column
-        background: background annotation set
+        
+    :param entry_id: protein or gene identifier column
+    :param category_id: GO term column
+    :param background: background annotation set
     """
     defaults = {'compression' : 'gzip',
             'comment' : '#',
