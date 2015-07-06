@@ -52,4 +52,3 @@ def gene2go(filename, experimental=True, tax_id=9606, **kwds):
         result.drop(result.index[~retain_mask], inplace=True)
 
     return result
-

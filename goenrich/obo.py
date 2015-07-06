@@ -1,13 +1,24 @@
+import re
+import os
+import pickle
 import networkx as nx
 
-def add(G, id, name, namespace, is_a=None, **kwargs):
+def add(G, id, name, namespace, is_a=None, subset=None, **kwargs):
     """ add term to ontology graph """
-    if kwargs.get('def', '').startswith('"OBSOLETE'):
+    if next(iter(kwargs.get('def', set([''])))).startswith('"OBSOLETE'):
         return 'obsolete'
     else:
+        # assumed unique
+        id = next(iter(id))
+        name = next(iter(name)) 
+        namespace = next(iter(namespace)) 
         if is_a is not None:
-            G.add_edge(id, is_a) # child -> parent
-        G.add_node(id, name=name, namespace=namespace)
+            for parent in is_a:
+                G.add_edge(id, parent)
+        attr_dict = {}
+        if subset is not None:
+            attr_dict['subset'] = subset
+        G.add_node(id, name=name, namespace=namespace, attr_dict=attr_dict)
         if name == namespace:
             G.graph['roots'][name] = id
         return 'added'
@@ -22,16 +33,29 @@ def term(f, G):
         else:
             # remove comments and split to `key: value`
             key,value = line.split('!')[0].strip().split(': ', 1)
-            attr[key] = value
+            attr.setdefault(key, set()).add(value)
 
-def graph(filename, verbose=False):
-    """ Generate ontology graph """
+def graph(filename, verbose=False, ontology_cache=None):
+    """ Generate ontology graph
+    
+    :param filename: .obo file name
+    :param verbose: print parsing info
+    :param ontology_cache: pickle graph to file for faster loading"""
+    if ontology_cache is not None:
+        if os.path.isfile(ontology_cache):
+            with open(ontology_cache, 'rb') as f:
+                return pickle.load(f)
     G = nx.DiGraph(roots={})
     i = 0
     obsolete = 0
+    goslim_definition = re.compile('subsetdef: (goslim_\w+) "(.*)"')
     with open(filename) as f:
         while True:
             line = f.readline()
+            match = re.match(goslim_definition, line)
+            if match is not None:
+                G.graph.setdefault('goslims', {}).update(dict([match.groups()]))
+            # TODO regex
             if line == '[Term]\n': # start term
                 i += 1
                 if term(f, G) == 'obsolete':
@@ -46,4 +70,8 @@ def graph(filename, verbose=False):
         G.node[root]['depth'] = 0
         for n, depth in nx.single_source_shortest_path_length(Grev, root).items():
             G.node[n]['depth'] = depth
+
+    if ontology_cache is not None:
+        with open(ontology_cache, 'wb') as f:
+            pickle.dump(G, f)
     return G

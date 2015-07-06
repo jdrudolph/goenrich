@@ -13,7 +13,7 @@ def to_frame(G, node_filter = lambda node: True, **kwargs):
         for term, node in G.nodes(data=True) if node_filter(node)])
         .set_index('term'))
 
-def to_graphviz(G, sig, gvfile, graph_label=None, **kwargs):
+def to_graphviz(G, sig, gvfile, goslim=None, graph_label=None, **kwargs):
     """ export graph of signifcant findings to dot file.
     A png can be generated from the commandline using graphviz
 
@@ -21,6 +21,8 @@ def to_graphviz(G, sig, gvfile, graph_label=None, **kwargs):
 
     :param sig: array_like of node lables to include in result graph
     :param gvfile: file or filepath
+    :param goslim: contract graph and skip categories which are not part
+        of the specified goslim
     :param graph_label: give custom graph label otherwise
         additional information will be printed.
         For empty label pass graph_label=''.
@@ -30,6 +32,12 @@ def to_graphviz(G, sig, gvfile, graph_label=None, **kwargs):
         namespace = G.node[n]['namespace']
         root = G.graph['roots'][namespace]
         for path in nx.simple_paths.all_simple_paths(G, n, root):
+            if goslim is not None:
+                start = n
+                end = None
+                for i, m in path[1:]:
+                    if goslim in G.node[m]['subset']: # TODO
+                        continue
             nodes.update(path)
     R = G.subgraph(nodes).reverse()
     for n in R:
