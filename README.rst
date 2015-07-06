@@ -8,7 +8,7 @@ goenrich
 .. image:: https://readthedocs.org/projects/goenrich/badge/?version=latest
     :alt: Documentation Status
     :scale: 100%
-    :target: goenrich.readthedocs.org/en/latest 
+    :target: https://goenrich.readthedocs.org/en/latest 
 
 Convenient GO enrichments from python. For use in ``python`` projects.
 
