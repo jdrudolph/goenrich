@@ -28,12 +28,14 @@ subprocess.call(['dot', '-Tpng', 'example.dot', '-o', 'example.png'])
 
 
 # goslim example
-S = goenrich.goslim.subset('goslim-goa')
-result_slim = goenrich.analyze(S, query, gvfile='example_slim.dot', show='top20')
+# dowload goslim from ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/goslim/goslim_goa.obo
+goa_slim = goenrich.goslim.read('db/goslim_goa.obo')
+goenrich.goslim.add(G, 'goslim_goa', (n for n in goa_slim if n in G))
+S = goenrich.goslim.subset(G, 'goslim_goa')
+result_slim = goenrich.enrich.analyze(S, query, gvfile='example_slim.dot', show='top20')
 
 # generate html
-result2[['name', 'x', 'p', 'q', 'namespace']].head().to_html('example_slim.html')
+result_slim[['name', 'x', 'p', 'q', 'namespace']].head().to_html('example_slim.html')
 
 # call to graphviz
-import subprocess
 subprocess.call(['dot', '-Tpng', 'example_slim.dot', '-o', 'example_slim.png'])

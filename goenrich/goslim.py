@@ -1,12 +1,13 @@
 """
 tools for working with goslims
 """
+import re
 import networkx as nx
 
 def add(O, goslim, nodes):
     """ add goslim to specified nodes in the ontology """
     for n in nodes:
-        O.node[n]['subset'].setdefault(set()).add(goslim)
+        O.node[n].setdefault('subset', set()).add(goslim)
 
 def subset(O, goslim):
     """ get the ontology-subset corresponding to the specified goslim
