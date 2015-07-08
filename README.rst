@@ -147,17 +147,6 @@ or directly from python:
 
 .. image:: https://cloud.githubusercontent.com/assets/2606663/8525018/cad3a288-23fe-11e5-813c-bd205a47eed8.png
 
-GO-slim
----------
-
-.. code:: python
-
-  # dowload goslim from ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/goslim/goslim_goa.obo
-  goa_slim = goenrich.goslim.read('db/goslim_goa.obo')
-  goenrich.goslim.add(G, 'goslim_goa', (n for n in goa_slim if n in G))
-  S = goenrich.goslim.subset(G, 'goslim_goa')
-  result_slim = goenrich.enrich.analyze(S, query, gvfile='example_slim.dot', show='top20')
-
 Check the documentation for all available parameters
 
 Licence
