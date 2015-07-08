@@ -14,5 +14,3 @@ __pycache__
 example*
 
 docs/_*
-docs/Makefile
-docs/make.bat
