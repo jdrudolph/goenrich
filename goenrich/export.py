@@ -1,4 +1,5 @@
 import networkx as nx
+import numpy as np
 import pandas as pd
 
 import goenrich
@@ -31,7 +32,7 @@ def to_graphviz(G, gvfile, graph_label='', **kwargs):
         node = G.node[n]
         attr = {}
         attr['shape'] = 'record'
-        if 'q' in node:
+        if not np.isnan(node.get('q', float('NaN'))):
             attr['color'] = 'red' if node['significant'] else 'black'
             attr['label'] = """{name}
             {x} / {n} genes
@@ -42,7 +43,7 @@ def to_graphviz(G, gvfile, graph_label='', **kwargs):
             attr['label'] = """{name}""".format(name=node['name'])
         G.node[n] = attr
 
-    A = nx.to_agraph(R)
+    A = nx.to_agraph(G)
     A.graph_attr['label'] = graph_label
     A.graph_attr['labelloc'] = 't'
     

@@ -14,7 +14,6 @@ Convenient GO enrichments from python. For use in ``python`` projects.
 
 #. Builds the GO-ontology graph
 #. Propagates GO-annotations up the graph
-#. Subsetting using goslim
 #. Performs enrichment test for all categories
 #. Performs multiple testing correction
 #. Allows for export to ``pandas`` for processing and ``graphviz`` for
@@ -45,19 +44,30 @@ Run GO enrichment
   import goenrich
 
   # build the ontology
-  O = goenrich.obo.graph('db/go-basic.obo')
+  O = goenrich.obo.ontology('db/go-basic.obo')
 
   # use all entrez geneid associations form gene2go as background
   # use goenrich.read.goa('db/gene_association.goa_ref_human.gz') for uniprot
-  background = goenrich.read.gene2go('db/gene2go.gz')
-  G = goenrich.enrich.set_background(O, background, 'GeneID', 'GO_ID')
+  gene2go = goenrich.read.gene2go('db/gene2go.gz')
+  values = {k: set(v) for k,v in gene2go.groupby('GO_ID')['GeneID']}
+
+  # propagate the background through the ontology
+  background_attribute = 'gene2go'
+  goenrich.enrich.propagate(O, values, background_attribute)
 
   # extract some list of entries as example query
-  query = set(background['GeneID'].unique()[:20])
+  query = gene2go['GeneID'].unique()[:20]
 
   # for additional export to graphviz just specify the gvfile argument
   # the show argument keeps the graph reasonably small
-  result = goenrich.enrich.analyze(G, query, gvfile='example.dot', show='top20')
+  df = goenrich.enrich.analyze(O, query, background_attribute, gvfile='test.dot')
+
+  # generate html
+  df.dropna().head().to_html('example.html')
+
+  # call to graphviz
+  import subprocess
+  subprocess.check_call(['dot', '-Tpng', 'test.dot', '-o', 'test.png'])
 
 .. raw:: html
 
@@ -66,69 +76,74 @@ Run GO enrichment
       <tr style="text-align: right;">
         <th></th>
         <th>name</th>
-        <th>x</th>
+        <th>namespace</th>
         <th>p</th>
         <th>q</th>
-        <th>namespace</th>
-      </tr>
-      <tr>
+        <th>rejected</th>
         <th>term</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <th>GO:0005215</th>
-        <td>transporter activity</td>
-        <td>2</td>
-        <td>0.015062</td>
-        <td>0.017070</td>
+        <th>1245</th>
+        <td>response to organic cyclic compound</td>
+        <td>biological_process</td>
+        <td>2.856257e-06</td>
+        <td>6.732606e-06</td>
+        <td>1</td>
+        <td>GO:0014070</td>
+      </tr>
+      <tr>
+        <th>1668</th>
+        <td>ATP binding</td>
         <td>molecular_function</td>
+        <td>8.821334e-09</td>
+        <td>3.325412e-07</td>
+        <td>1</td>
+        <td>GO:0005524</td>
       </tr>
       <tr>
-        <th>GO:0009719</th>
-        <td>response to endogenous stimulus</td>
-        <td>4</td>
-        <td>0.000056</td>
-        <td>0.000181</td>
+        <th>1988</th>
+        <td>phosphorylation</td>
         <td>biological_process</td>
+        <td>1.101491e-03</td>
+        <td>1.118437e-03</td>
+        <td>1</td>
+        <td>GO:0016310</td>
       </tr>
       <tr>
-        <th>GO:1901699</th>
-        <td>cellular response to nitrogen compound</td>
-        <td>2</td>
-        <td>0.000631</td>
-        <td>0.001227</td>
+        <th>3319</th>
+        <td>cellular response to organonitrogen compound</td>
         <td>biological_process</td>
+        <td>2.639774e-05</td>
+        <td>5.084590e-05</td>
+        <td>1</td>
+        <td>GO:0071417</td>
       </tr>
       <tr>
-        <th>GO:0060089</th>
-        <td>molecular transducer activity</td>
-        <td>2</td>
-        <td>0.022831</td>
-        <td>0.023523</td>
+        <th>3422</th>
+        <td>metal ion binding</td>
         <td>molecular_function</td>
-      </tr>
-      <tr>
-        <th>GO:0019725</th>
-        <td>cellular homeostasis</td>
-        <td>2</td>
-        <td>0.001838</td>
-        <td>0.002907</td>
-        <td>biological_process</td>
+        <td>1.719726e-05</td>
+        <td>3.439452e-05</td>
+        <td>1</td>
+        <td>GO:0046872</td>
       </tr>
     </tbody>
   </table>
 
-Generate ``png`` image using graphviz
+Generate ``png`` image using graphviz:
 
 .. code:: shell
 
     dot -Tpng example.dot > example.png
+
+or directly from python:
+
+.. code:: python
+  
+  import subprocess
+  subprocess.check_call(['dot', '-Tpng', 'example.dot', '-o', 'example.png'])
 
 .. image:: https://cloud.githubusercontent.com/assets/2606663/8525018/cad3a288-23fe-11e5-813c-bd205a47eed8.png
 
@@ -143,49 +158,7 @@ GO-slim
   S = goenrich.goslim.subset(G, 'goslim_goa')
   result_slim = goenrich.enrich.analyze(S, query, gvfile='example_slim.dot', show='top20')
 
-Parameters
-~~~~~~~~~~
-
-Parameters can all be passed to ``enrich.analyze`` as shown below
-
-.. code:: python
-
-    go_options = {
-            'multiple-testing-correction' : 'bonferroni',
-            'alpha' : 0.05,
-            'node_filter' : lambda x : x.get('significant', False)
-    }
-    goenrich.enrich.analyze(G, query, **go_options)
-
-    # export results to graphviz
-    goenrich.enrich.analyze(G, query, gvfile='example.dot', **go_options)
-
-Here is an overview over the available parmeters
-
-::
-
-    read.*:
-      experimental = True # don't consider inferred annotations
-
-    enrich.analyze:
-      node_filter = lambda node : 'p' in node
-      show = 'top20' # works for any 'topNUM'
-
-    enrich.calculate_pvalues:
-      min_hit_size = 2
-      min_category_size = 3
-      max_category_size = 500
-      max_category_depth = 5
-
-    enrich.multiple_testing_correction:
-      alpha = 0.05
-      method = 'benjamin-hochberg' # also supported : 'bonferroni'
-
-    export.to_frame:
-      node_filter = lambda node: True
-
-    export.to_graphviz:
-      graph_label = None # if None it is replaced by multiple testing info
+Check the documentation for all available parameters
 
 Licence
 =======
@@ -197,5 +170,7 @@ Contributions are welcome!
 Building the documentation
 ==========================
 
-sphinx-apidoc -f -o docs goenrich goenrich/tests
+.. code:: shell
+
+  sphinx-apidoc -f -o docs goenrich goenrich/tests
 

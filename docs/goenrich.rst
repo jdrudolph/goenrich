@@ -20,14 +20,6 @@ goenrich.export module
     :undoc-members:
     :show-inheritance:
 
-goenrich.goslim module
-----------------------
-
-.. automodule:: goenrich.goslim
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 goenrich.obo module
 -------------------
 

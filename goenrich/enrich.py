@@ -1,4 +1,5 @@
 import networkx as nx
+import numpy as np
 from scipy.stats import hypergeom
 from statsmodels.stats.multitest import fdrcorrection
 
@@ -18,30 +19,29 @@ def analyze(O, query, background_attribute, **kwargs):
     :returns: pandas.DataFrame with results
     """
     options = {
-            'node_filter' : lambda node : 'p' in node,
-            'show' : 'top20',
+            'show' : 'top20'
     }
     options.update(kwargs)
     _query = set(query)
     terms, nodes = zip(*O.nodes(data=True))
     M = len(terms)
     N = len(_query)
-    ps, xs, ns = calculate_pvalues(nodes, _query,
-            background_attribute, M, **options)
+    ps, xs, ns = calculate_pvalues(nodes, _query, background_attribute, M, **options)
     qs, rejs = multiple_testing_correction(ps, **options)
-    df = goenrich.export.to_frame(nodes, term=terms, q=qs, rejected=rej, p=ps)
+    df = goenrich.export.to_frame(nodes, term=terms, q=qs, rejected=rejs, p=ps)
     if 'gvfile' in options:
         show = options['show']
         if show.startswith('top'):
             top = int(show.replace('top', ''))
-            sig = df.sort('q').head(top).index
+            sig = df.sort('q').head(top)['term']
         else:
             raise NotImplementedError(show)
         G = induced_subgraph(O, sig)
-        for term, node, q, x, n, rej in zip(terms, nodes, qs, zs, ns, rejs):
+        for term, node, q, x, n, rej in zip(terms, nodes, qs, xs, ns, rejs):
             if term in G:
-                G.node.update({'name' : name, 'x' : x, 'q' : q, 'n' : n,
-                    'significant' : sig})
+                G.node[term].update({'name' : node['name'], 'x' : x,
+                    'q' : q, 'n' : n, 'significant' : rej})
+        G.reverse(copy=False)
         goenrich.export.to_graphviz(G, **options)
     return df
     
@@ -97,7 +97,7 @@ def calculate_pvalues(nodes, query, background_attribute, M,
     :param min_hit_size: minimum intersection size of query and category 
     :param min_category_size: categories smaller than this number are ignored
     :param max_category_size: categories larger than this number are ignored
-    :returns: dictionary of term : pvalue
+    :returns: pvalues, x, n
     """
     N = len(query)
     vals = []
@@ -125,17 +125,17 @@ def multiple_testing_correction(ps, alpha=0.05,
     :returns (q, rej): two lists of q-values and rejected nodes
     """
     _p = np.array(ps)
-    q = p.copy()
-    rej = p.copy()
+    q = _p.copy()
+    rej = _p.copy()
     mask = ~np.isnan(_p)
-    p = _p[p]
+    p = _p[mask]
     if method == 'bonferroni':
         q[mask] = p / len(p)
         rej[mask] = q[mask] < alpha
     elif method == 'benjamini-hochberg':
         _rej, _q = fdrcorrection(p, alpha)
         rej[mask] = _rej
-        _q[mask] = _q
+        q[mask] = _q
     else:
         raise ValueError(method)
     return q, rej
