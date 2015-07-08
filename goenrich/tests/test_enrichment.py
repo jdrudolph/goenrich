@@ -5,12 +5,12 @@ import subprocess
 import goenrich
 
 cache = '.test_cache.pkl'
-if os.path.isfile(cache):
+if False and os.path.isfile(cache):
     with open(cache, 'rb') as f:
         O, G_gene2go, G_goa, goa, gene2go = pickle.load(f)
 else:
     with open(cache, 'wb') as f:
-        O = goenrich.obo.graph('db/go-basic.obo', ontology_cache='.basic.pkl')
+        O = goenrich.obo.ontology('db/go-basic.obo')
         goa = [goenrich.read.goa('db/gene_association.goa_ref_human.gz'), 'db_object_id', 'go_id']
         gene2go = [goenrich.read.gene2go('db/gene2go.gz'), 'GeneID', 'GO_ID']
         G_gene2go = goenrich.enrich.set_background(O, *gene2go)

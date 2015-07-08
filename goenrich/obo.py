@@ -1,77 +1,61 @@
-import re
-import os
-import pickle
+import itertools
 import networkx as nx
 
-def add(G, id, name, namespace, is_a=None, subset=None, **kwargs):
-    """ add term to ontology graph """
-    if next(iter(kwargs.get('def', set([''])))).startswith('"OBSOLETE'):
-        return 'obsolete'
-    else:
-        # assumed unique
-        id = next(iter(id))
-        name = next(iter(name)) 
-        namespace = next(iter(namespace)) 
-        if is_a is not None:
-            for parent in is_a:
-                G.add_edge(id, parent)
-        attr_dict = {}
-        if subset is not None:
-            attr_dict['subset'] = subset
-        G.add_node(id, name=name, namespace=namespace, attr_dict=attr_dict)
-        if name == namespace:
-            G.graph['roots'][name] = id
-        return 'added'
-
-def term(f, G):
-    """ parse term starting after [Term] tag, until key: value pair is missed """
-    attr = {}
-    while True:
-        line = f.readline()
-        if line == '\n': # end of term found
-            return add(G, **attr)
+def _tokenize(f):
+    token = []
+    for line in f:
+        if line == '\n':
+            yield token
+            token = []
         else:
-            # remove comments and split to `key: value`
-            key,value = line.split('!')[0].strip().split(': ', 1)
-            attr.setdefault(key, set()).add(value)
+            token.append(line)
 
-def graph(filename, verbose=False, ontology_cache=None):
-    """ Generate ontology graph
-    
-    :param filename: .obo file name
-    :param verbose: print parsing info
-    :param ontology_cache: pickle graph to file for faster loading"""
-    if ontology_cache is not None:
-        if os.path.isfile(ontology_cache):
-            with open(ontology_cache, 'rb') as f:
-                return pickle.load(f)
-    G = nx.DiGraph(roots={})
-    i = 0
-    obsolete = 0
-    goslim_definition = re.compile('subsetdef: (goslim_\w+) "(.*)"')
-    with open(filename) as f:
-        while True:
-            line = f.readline()
-            match = re.match(goslim_definition, line)
-            if match is not None:
-                G.graph.setdefault('goslims', {}).update(dict([match.groups()]))
-            # TODO regex
-            if line == '[Term]\n': # start term
-                i += 1
-                if term(f, G) == 'obsolete':
-                    obsolete += 1
-            elif line == '': # entire file parsed
+def _filter_terms(tokens):
+    for token in tokens:
+        if token[0] == '[Term]\n':
+            yield token[1:]
+
+def _parse_terms(terms):
+    for term in terms:
+        obsolete = False
+        node = {}
+        parents = []
+        for line in term:
+            if line.startswith('id:'):
+                id = line[4:-1]
+            elif line.startswith('name:'):
+                node['name'] = line[6:-1]
+            elif line.startswith('namespace:'):
+                node['namespace'] = line[11:-1]
+            elif line.startswith('is_a:'):
+                parents.append(line[6:16])
+            elif line.startswith('relationship: part_of'):
+                parents.append(line[22:32])
+            elif line.startswith('is_obsolete'):
+                obsolete = True
                 break
-    if verbose:
-        print(i, 'terms parsed,', obsolete, 'obsolete ignored')
+        if not obsolete:
+            edges = [(p, id) for p in parents] # will reverse edges later
+            yield (id, node), edges
+        else:
+            continue
 
-    Grev = G.reverse()
-    for root in G.graph['roots'].values():
-        G.node[root]['depth'] = 0
-        for n, depth in nx.single_source_shortest_path_length(Grev, root).items():
-            G.node[n]['depth'] = depth
+_filename = 'db/go-basic.obo'
 
-    if ontology_cache is not None:
-        with open(ontology_cache, 'wb') as f:
-            pickle.dump(G, f)
-    return G
+def ontology(filename):
+    O = nx.DiGraph()
+    with open(filename) as f:
+        tokens = _tokenize(f)
+        terms = _filter_terms(tokens)
+        entries = _parse_terms(terms)
+        nodes, edges = zip(*entries)
+        O.add_nodes_from(nodes)
+        O.add_edges_from(itertools.chain.from_iterable(edges))
+        O.graph['roots'] = {data['name'] : n for n, data in O.node.items()
+                if data['name'] == data['namespace']}
+    for root in O.graph['roots'].values():
+        for n, depth in nx.shortest_path_length(O, root).items():
+            node = O.node[n]
+            node['depth'] = min(depth, node.get('depth', float('inf')))
+    O.reverse(copy=False)
+    return O

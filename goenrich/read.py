@@ -1,3 +1,6 @@
+"""
+parsers for different go-annotation formats
+"""
 import pandas as pd
 GENE_ASSOCIATION_COLUMNS = ('db', 'db_object_id', 'db_object_symbol',
                             'qualifier', 'go_id', 'db_reference',
