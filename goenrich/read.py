@@ -34,7 +34,7 @@ def goa(filename, experimental=True, **kwds):
 
 
 GENE2GO_COLUMNS = ('tax_id', 'GeneID', 'GO_ID', 'Evidence', 'Qualifier', 'GO_term', 'PubMed', 'Category')
-def gene2go(filename, experimental=True, tax_id=9606, **kwds):
+def gene2go(filename, experimental=False, tax_id=9606, **kwds):
     """ read go-annotation file
         
     :param entry_id: protein or gene identifier column

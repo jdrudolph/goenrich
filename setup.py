@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='goenrich',
-      version='1.2.1',
+      version='1.2.2',
       description='GO enrichment with python -- pandas meets networkx',
       long_description=readme(),
       classifiers=[
@@ -13,6 +13,7 @@ setup(name='goenrich',
           'Intended Audience :: Science/Research',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 3.4',
+          'Programming Language :: Python :: 2.7',
           'Topic :: Scientific/Engineering :: Bio-Informatics',
           'Topic :: Software Development :: Libraries'],
       keywords= ['GO', 'Gene Ontology', 'Biology', 'Enrichment',
@@ -31,5 +32,5 @@ setup(name='goenrich',
           'statsmodels',
           'networkx'],
       test_suite='nose.collector',
-      tests_require=['nose'],
+      tests_require=['nose', 'setuptools'],
       zip_safe=False)

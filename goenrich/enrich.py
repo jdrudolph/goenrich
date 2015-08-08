@@ -24,11 +24,13 @@ def analyze(O, query, background_attribute, **kwargs):
     options.update(kwargs)
     _query = set(query)
     terms, nodes = zip(*O.nodes(data=True))
-    M = len(terms)
+    M = len({x for n in nodes for x in n[background_attribute]}) # all ids used
     N = len(_query)
-    ps, xs, ns = calculate_pvalues(nodes, _query, background_attribute, M, **options)
+    ps, xs, ns = calculate_pvalues(nodes, _query, background_attribute,
+            M, **options)
     qs, rejs = multiple_testing_correction(ps, **options)
-    df = goenrich.export.to_frame(nodes, term=terms, q=qs, rejected=rejs, p=ps)
+    df = goenrich.export.to_frame(nodes, term=terms, q=qs, rejected=rejs,
+            p=ps, x=xs, n=ns, M=M, N=N)
     if 'gvfile' in options:
         show = options['show']
         if show.startswith('top'):
@@ -87,14 +89,13 @@ def induced_subgraph(O, terms):
     return O.subgraph(nodes)
 
 def calculate_pvalues(nodes, query, background_attribute, M,
-        min_hit_size=2, min_category_size=3, max_category_size=500,
+        min_category_size=3, max_category_size=500,
         max_category_depth=5, **kwargs):
     """ calculate pvalues for all categories in the graph
     
     :param G: ontology graph after background was set
     :param query: set of identifiers
     :param background_attribute: node attribute assoc. with the background set
-    :param min_hit_size: minimum intersection size of query and category 
     :param min_category_size: categories smaller than this number are ignored
     :param max_category_size: categories larger than this number are ignored
     :returns: pvalues, x, n
@@ -107,9 +108,8 @@ def calculate_pvalues(nodes, query, background_attribute, M,
         hits = query.intersection(background)
         x = len(hits)
         if ((node['depth'] > max_category_depth)
-            or (n < min_category_size)
-            or (n > max_category_size)
-            or (x < min_hit_size)):
+            or (n <= min_category_size)
+            or (n > max_category_size)):
             vals.append((float('NaN'), x, n))
         else:
             vals.append((hypergeom.sf(x, M, n, N), x, n))
