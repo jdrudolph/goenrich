@@ -34,9 +34,7 @@ def to_graphviz(G, gvfile, graph_label='', **kwargs):
         attr['shape'] = 'record'
         if not np.isnan(node.get('q', float('NaN'))):
             attr['color'] = 'red' if node['significant'] else 'black'
-            attr['label'] = """{name}
-            {x} / {n} genes
-            q = {q:E}""".format(name=node['name'],
+            attr['label'] = "{name}\\n{x} / {n} genes\\nq = {q:E}".format(name=node['name'],
                     q=node['q'], x=node['x'], n=node['n'])
         else:
             attr['color'] = 'black'
