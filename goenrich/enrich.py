@@ -107,7 +107,7 @@ def calculate_pvalues(nodes, query, background_attribute, M,
         n = len(background)
         hits = query.intersection(background)
         x = len(hits)
-        if ((node['depth'] > max_category_depth)
+        if ((node.get('depth', 0) > max_category_depth)
             or (n <= min_category_size)
             or (n > max_category_size)):
             vals.append((float('NaN'), x, n))
