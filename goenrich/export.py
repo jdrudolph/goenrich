@@ -41,7 +41,7 @@ def to_graphviz(G, gvfile, graph_label='', **kwargs):
             attr['label'] = """{name}""".format(name=node['name'])
         G.node[n] = attr
 
-    A = nx.to_agraph(G)
+    A = nx.drawing.nx_agraph.to_agraph(G)
     A.graph_attr['label'] = graph_label
     A.graph_attr['labelloc'] = 't'
     
