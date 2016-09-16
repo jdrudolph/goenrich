@@ -12,12 +12,10 @@ EXPERIMENTAL_EVIDENCE = ('EXP', 'IDA', 'IPI', 'IMP', 'IGI', 'IEP')
 def goa(filename, experimental=True, **kwds):
     """ read go-annotation file
     
-    :param entry_id: protein or gene identifier column
-    :param category_id: GO term column
-    :param background: background annotation set
+    :param filename: protein or gene identifier column
+    :param experimental: use only experimentally validated annotations
     """
     defaults = {'comment' : '!',
-            'compression' : 'gzip',
             'names': GENE_ASSOCIATION_COLUMNS}
 
     if experimental and 'usecols' in kwds:
@@ -32,14 +30,21 @@ def goa(filename, experimental=True, **kwds):
 
     return result
 
+def sgd(filename, experimental=False, **kwds):
+    """ read yeast genome database go-annotation file
+
+    :param filename: protein or gene identifier column
+    :param experimental: use only experimentally validated annotations
+    """
+    return goa(filename, experimental, **kwds)
 
 GENE2GO_COLUMNS = ('tax_id', 'GeneID', 'GO_ID', 'Evidence', 'Qualifier', 'GO_term', 'PubMed', 'Category')
 def gene2go(filename, experimental=False, tax_id=9606, **kwds):
     """ read go-annotation file
         
-    :param entry_id: protein or gene identifier column
-    :param category_id: GO term column
-    :param background: background annotation set
+    :param filename: protein or gene identifier column
+    :param experimental: use only experimentally validated annotations
+    :param tax_id: filter according to taxon
     """
     defaults = {'compression' : 'gzip',
             'comment' : '#',

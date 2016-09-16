@@ -33,6 +33,8 @@ Installation
     wget http://purl.obolibrary.org/obo/go/go-basic.obo -O db/go-basic.obo
     # UniprotACC
     wget http://geneontology.org/gene-associations/gene_association.goa_ref_human.gz -O db/gene_association.goa_ref_human.gz
+    # Yeast SGD
+    wget http://downloads.yeastgenome.org/curation/literature/gene_association.sgd.gz -O db/gene_association.sgd.gz
     # Entrez GeneID
     wget ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2go.gz -O db/gene2go.gz
 
@@ -47,8 +49,10 @@ Run GO enrichment
   O = goenrich.obo.ontology('db/go-basic.obo')
 
   # use all entrez geneid associations form gene2go as background
-  # use goenrich.read.goa('db/gene_association.goa_ref_human.gz') for uniprot
+  # use annot = goenrich.read.goa('db/gene_association.goa_ref_human.gz') for uniprot
+  # use annot = goenrich.read.sgd('db/gene_association.sgd.gz') for yeast
   gene2go = goenrich.read.gene2go('db/gene2go.gz')
+  # use values = {k: set(v) for k,v in annot.groupby('go_id')['db_object_symbol']} for uniprot/yeast
   values = {k: set(v) for k,v in gene2go.groupby('GO_ID')['GeneID']}
 
   # propagate the background through the ontology
@@ -56,6 +60,7 @@ Run GO enrichment
   goenrich.enrich.propagate(O, values, background_attribute)
 
   # extract some list of entries as example query
+  # use query = annot['db_object_symbol'].unique()[:20]
   query = gene2go['GeneID'].unique()[:20]
 
   # for additional export to graphviz just specify the gvfile argument
