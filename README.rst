@@ -1,11 +1,10 @@
-goenrich
-========
+goenrich README
+===============
 
 .. image:: https://badges.gitter.im/Join%20Chat.svg
     :target: https://gitter.im/jdrudolph/goenrich?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 .. image:: https://readthedocs.org/projects/goenrich/badge/?version=latest
-    :scale: 100%
     :target: https://goenrich.readthedocs.org/en/latest 
 
 .. image:: https://travis-ci.org/jdrudolph/goenrich.svg?branch=master
@@ -74,69 +73,6 @@ Run GO enrichment
   # call to graphviz
   import subprocess
   subprocess.check_call(['dot', '-Tpng', 'test.dot', '-o', 'test.png'])
-
-.. raw:: html
-
-  <table border="1" class="dataframe">
-    <thead>
-      <tr style="text-align: right;">
-        <th></th>
-        <th>name</th>
-        <th>namespace</th>
-        <th>p</th>
-        <th>q</th>
-        <th>rejected</th>
-        <th>term</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th>1245</th>
-        <td>response to organic cyclic compound</td>
-        <td>biological_process</td>
-        <td>2.856257e-06</td>
-        <td>6.732606e-06</td>
-        <td>1</td>
-        <td>GO:0014070</td>
-      </tr>
-      <tr>
-        <th>1668</th>
-        <td>ATP binding</td>
-        <td>molecular_function</td>
-        <td>8.821334e-09</td>
-        <td>3.325412e-07</td>
-        <td>1</td>
-        <td>GO:0005524</td>
-      </tr>
-      <tr>
-        <th>1988</th>
-        <td>phosphorylation</td>
-        <td>biological_process</td>
-        <td>1.101491e-03</td>
-        <td>1.118437e-03</td>
-        <td>1</td>
-        <td>GO:0016310</td>
-      </tr>
-      <tr>
-        <th>3319</th>
-        <td>cellular response to organonitrogen compound</td>
-        <td>biological_process</td>
-        <td>2.639774e-05</td>
-        <td>5.084590e-05</td>
-        <td>1</td>
-        <td>GO:0071417</td>
-      </tr>
-      <tr>
-        <th>3422</th>
-        <td>metal ion binding</td>
-        <td>molecular_function</td>
-        <td>1.719726e-05</td>
-        <td>3.439452e-05</td>
-        <td>1</td>
-        <td>GO:0046872</td>
-      </tr>
-    </tbody>
-  </table>
 
 Generate ``png`` image using graphviz:
 
