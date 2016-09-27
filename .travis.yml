@@ -1,0 +1,13 @@
+language: python
+python:
+        - "3.5"
+
+install: pip install .
+
+before_script:
+        - mkdir db
+        - wget http://purl.obolibrary.org/obo/go/go-basic.obo -O db/go-basic.obo
+        - wget http://geneontology.org/gene-associations/gene_association.goa_ref_human.gz -O db/gene_association.goa_ref_human.gz
+        - wget ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene2go.gz -O db/gene2go.gz
+
+script: python setup.py test
