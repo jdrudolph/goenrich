@@ -3,12 +3,13 @@ goenrich
 
 .. image:: https://badges.gitter.im/Join%20Chat.svg
     :target: https://gitter.im/jdrudolph/goenrich?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-    :alt: gitter.im chat
 
 .. image:: https://readthedocs.org/projects/goenrich/badge/?version=latest
-    :alt: Documentation Status
     :scale: 100%
     :target: https://goenrich.readthedocs.org/en/latest 
+
+.. image:: https://travis-ci.org/jdrudolph/goenrich.svg?branch=master
+    :target: https://travis-ci.org/jdrudolph/goenrich
 
 Convenient GO enrichments from python. For use in ``python`` projects.
 
