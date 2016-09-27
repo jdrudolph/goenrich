@@ -42,14 +42,17 @@ def _parse_terms(terms):
 
 _filename = 'db/go-basic.obo'
 
-def ontology(filename):
+def ontology(file):
+    """ read ontology from file
+    :param file: file path of file handle
+    """
     O = nx.DiGraph()
 
-    if isinstance(filename, str):
-        f = open(filename)
+    if isinstance(file, str):
+        f = open(file)
         we_opened_file = True
     else:
-        f = filename
+        f = file
         we_opened_file = False
 
     try:
