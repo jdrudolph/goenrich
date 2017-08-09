@@ -8,7 +8,7 @@ import goenrich
 O = goenrich.obo.ontology('db/go-basic.obo')
 
 # use all entrez geneid associations form gene2go as background
-# use goenrich.read.goa('db/gene_association.goa_ref_human.gz') for uniprot
+# use goenrich.read.goa('db/gene_association.goa_human.gaf.gz') for uniprot
 gene2go = goenrich.read.gene2go('db/gene2go.gz')
 values = {k: set(v) for k,v in gene2go.groupby('GO_ID')['GeneID']}
 

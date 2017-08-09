@@ -32,7 +32,7 @@ Installation
     # Ontology
     wget http://purl.obolibrary.org/obo/go/go-basic.obo -O db/go-basic.obo
     # UniprotACC
-    wget http://geneontology.org/gene-associations/gene_association.goa_ref_human.gz -O db/gene_association.goa_ref_human.gz
+    wget http://geneontology.org/gene-associations/goa_human.gaf.gz -O db/gene_association.goa_human.gaf.gz
     # Yeast SGD
     wget http://downloads.yeastgenome.org/curation/literature/gene_association.sgd.gz -O db/gene_association.sgd.gz
     # Entrez GeneID
@@ -49,7 +49,7 @@ Run GO enrichment
   O = goenrich.obo.ontology('db/go-basic.obo')
 
   # use all entrez geneid associations form gene2go as background
-  # use annot = goenrich.read.goa('db/gene_association.goa_ref_human.gz') for uniprot
+  # use annot = goenrich.read.goa('db/gene_association.goa_human.gaf.gz') for uniprot
   # use annot = goenrich.read.sgd('db/gene_association.sgd.gz') for yeast
   gene2go = goenrich.read.gene2go('db/gene2go.gz')
   # use values = {k: set(v) for k,v in annot.groupby('go_id')['db_object_symbol']} for uniprot/yeast

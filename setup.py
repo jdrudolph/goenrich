@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='goenrich',
-      version='1.5.1',
+      version='1.6.0',
       description='GO enrichment with python -- pandas meets networkx',
       long_description=readme(),
       classifiers=[
@@ -21,14 +21,14 @@ setup(name='goenrich',
           'library',
           'visualization', 'graphviz', 'pandas'],
       url='https://github.com/jdrudolph/goenrich',
-      download_url='https://github.com/jdrudolph/goenrich/tarball/1.5',
+      download_url='https://github.com/jdrudolph/goenrich/tarball/1.6',
       author='Jan Daniel Rudolph',
       author_email='jan.daniel.rudolph@gmail.com',
       license='MIT',
       packages=['goenrich'],
       install_requires=[
           'numpy',
-          'pandas',
+          'pandas >= 0.17.0',
           'scipy',
           'statsmodels',
           'networkx'],

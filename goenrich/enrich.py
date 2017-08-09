@@ -35,7 +35,7 @@ def analyze(O, query, background_attribute, **kwargs):
         show = options['show']
         if show.startswith('top'):
             top = int(show.replace('top', ''))
-            sig = df.sort('q').head(top)['term']
+            sig = df.sort_values('q').head(top)['term']
         else:
             raise NotImplementedError(show)
         G = induced_subgraph(O, sig)
