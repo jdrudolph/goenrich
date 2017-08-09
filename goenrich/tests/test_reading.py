@@ -12,10 +12,10 @@ class TestRead(unittest.TestCase):
             self.assertFalse(f.closed)
 
     def test_goa(self):
-        background = goenrich.read.goa('db/gene_association.goa_ref_human.gz')
+        background = goenrich.read.goa('db/gene_association.goa_human.gaf.gz')
 
     def test_goa_from_file_obj(self):
-        with gzip.GzipFile('db/gene_association.goa_ref_human.gz') as f:
+        with gzip.GzipFile('db/gene_association.goa_human.gaf.gz') as f:
             background = goenrich.read.goa(f)
             self.assertFalse(f.closed)
 
