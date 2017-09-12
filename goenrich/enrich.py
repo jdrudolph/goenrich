@@ -112,7 +112,7 @@ def calculate_pvalues(nodes, query, background_attribute, M,
             or (n > max_category_size)):
             vals.append((float('NaN'), x, n))
         else:
-            vals.append((hypergeom.sf(x, M, n, N), x, n))
+            vals.append((hypergeom.sf(x-1, M, n, N), x, n))
     return zip(*vals)
 
 def multiple_testing_correction(ps, alpha=0.05,
