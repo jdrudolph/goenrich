@@ -34,8 +34,7 @@ class TestGoenrich(unittest.TestCase):
         query = [1, 2, 3, 4, 5]
         df = goenrich.enrich.analyze(O, query, background_attribute)
         best_pval = float(df.dropna().sort_values('p').head(1).p)
-        print(best_pval)
-        assert best_pval == float(0.016253869969040255)
+        self.assertAlmostEqual(best_pval, 0.016253869969040255)
 
 if __name__ == '__main__':
     unittest.main()
