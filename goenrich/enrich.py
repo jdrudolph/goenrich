@@ -43,8 +43,7 @@ def analyze(O, query, background_attribute, **kwargs):
             if term in G:
                 G.node[term].update({'name' : node['name'], 'x' : x,
                     'q' : q, 'n' : n, 'significant' : rej})
-        G = G.reverse(copy=False)
-        goenrich.export.to_graphviz(G, **options)
+        goenrich.export.to_graphviz(G.reverse(copy=False), **options)
     return df
     
 def propagate(O, values, attribute):
