@@ -102,7 +102,7 @@ Special thanks
 
 - `@lukauskas <https://github.com/lukauskas/>`_ for implementing i/o support for file-like objects.
 - `@zfrenchee <https://github.com/zfrenchee/>`_ for fixing a bug in the calculation of the test statistic.
-- `@pommy1 <https://github.com/pommy1>/`_ for implementing support for `networkx >= 2.0.0`.
+- `@pommy1 <https://github.com/pommy1/>`_ for implementing support for `networkx >= 2.0.0`.
 
 Building the documentation
 ==========================
