@@ -1,7 +1,7 @@
 import networkx as nx
 import numpy as np
 from scipy.stats import hypergeom
-from statsmodels.stats.multitest import fdrcorrection
+from goenrich.tools import fdrcorrection
 
 import goenrich.export
 
