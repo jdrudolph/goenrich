@@ -92,27 +92,28 @@ def calculate_pvalues(nodes, query, background_attribute, M,
         max_category_depth=5, **kwargs):
     """ calculate pvalues for all categories in the graph
 
-    :param G: ontology graph after background was set
-    :param query: set of identifiers
+    :param nodes: nodes dictionary from the ontology graph after background was set
+    :param query: set of identifiers for which the p value is calculated
     :param background_attribute: node attribute assoc. with the background set
-    :param M: total number of background ids
+    :param M: background size, total number of genes in the data
     :param min_category_size: categories smaller than this number are ignored
     :param max_category_size: categories larger than this number are ignored
+    :param max_category_depth: categories lower in the hierarchy (more specific) will be ignored
     :returns: pvalues, x, n
     """
     N = len(query)
     vals = []
     for node in nodes:
-        background = node[background_attribute]
-        n = len(background)
-        hits = query.intersection(background)
+        category = node[background_attribute]
+        n = len(category)
+        hits = query.intersection(category)
         x = len(hits)
         if ((node.get('depth', 0) > max_category_depth)
             or (n <= min_category_size)
             or (n > max_category_size)):
             vals.append((float('NaN'), x, n))
         else:
-            vals.append((hypergeom.sf(x-1, M, N, n), x, n))
+            vals.append((hypergeom.sf(x-1, M, n, N), x, n))
     return zip(*vals)
 
 def multiple_testing_correction(ps, alpha=0.05,
