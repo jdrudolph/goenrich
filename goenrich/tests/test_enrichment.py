@@ -23,7 +23,7 @@ class TestGoenrich(unittest.TestCase):
         self.assertEqual(len(df.query('q<0.05')), 8)
 
 
-    def test_pval_correctness(self):
+    def test_pval_correctness_fdr(self):
         O = networkx.DiGraph()
         O.add_node(0, name='r', namespace='a')
         O.add_node(1, name='1', namespace='a')
@@ -36,7 +36,26 @@ class TestGoenrich(unittest.TestCase):
         query = [1, 2, 3, 4, 5]
         df = goenrich.enrich.analyze(O, query, background_attribute)
         best_pval = float(df.dropna().sort_values('p').head(1).p)
+        best_qval = float(df.dropna().sort_values('q').head(1).q)
         self.assertAlmostEqual(best_pval, 0.016253869969040255)
+        self.assertAlmostEqual(best_qval, 2 * best_pval)
+
+    def test_pval_correctness_bonferroni(self):
+        O = networkx.DiGraph()
+        O.add_node(0, name='r', namespace='a')
+        O.add_node(1, name='1', namespace='a')
+        O.add_node(2, name='2', namespace='a')
+        O.add_edge(0, 1)
+        O.add_edge(0, 2)
+        values = {1: set(range(10)), 2: set(range(20))}
+        background_attribute = 'bg_attr'
+        goenrich.enrich.propagate(O, values, background_attribute)
+        query = [1, 2, 3, 4, 5]
+        df = goenrich.enrich.analyze(O, query, background_attribute, method='bonferroni')
+        best_pval = float(df.dropna().sort_values('p').head(1).p)
+        best_qval = float(df.dropna().sort_values('q').head(1).q)
+        self.assertAlmostEqual(best_pval, 0.016253869969040255)
+        self.assertAlmostEqual(best_qval, 0.0325077399)
 
 if __name__ == '__main__':
     unittest.main()
