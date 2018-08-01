@@ -131,7 +131,7 @@ def multiple_testing_correction(ps, alpha=0.05,
     mask = ~np.isnan(_p)
     p = _p[mask]
     if method == 'bonferroni':
-        q[mask] = p / len(p)
+        q[mask] = p * len(p)
         rej[mask] = q[mask] < alpha
     elif method == 'benjamini-hochberg':
         _rej, _q = fdrcorrection(p, alpha)
