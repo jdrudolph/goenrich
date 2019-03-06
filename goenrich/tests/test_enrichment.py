@@ -20,7 +20,7 @@ class TestGoenrich(unittest.TestCase):
         except ImportError:
             df = goenrich.enrich.analyze(O, query, background_attribute)
             print('pygraphviz could not be imported')
-        self.assertEqual(len(df.query('q<0.05')), 7)
+        self.assertEqual(len(df.query('q<0.05')), 8)
 
     def test_analysis_with_permutation_fdr(self):
         O = goenrich.obo.ontology('db/go-basic.obo')
@@ -33,7 +33,7 @@ class TestGoenrich(unittest.TestCase):
                 permutations = 10)
         # TODO test permuation based FDR calculation
         self.skipTest('NaN handling not finished')
-        self.assertEqual(len(df.query('q<0.05')), 7)
+        self.assertEqual(len(df.query('q<0.05')), 8)
 
 
     def test_pval_correctness_fdr(self):
