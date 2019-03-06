@@ -22,7 +22,7 @@ def goa(filename, experimental=True, **kwds):
         kwds['usecols'] += ('evidence_code', )
 
     defaults.update(kwds)
-    result = pd.read_table(filename, **defaults)
+    result = pd.read_csv(filename, sep='\t', **defaults)
 
     if experimental:
         retain_mask = result.evidence_code.isin(EXPERIMENTAL_EVIDENCE)
@@ -49,7 +49,7 @@ def gene2go(filename, experimental=False, tax_id=9606, **kwds):
     defaults = {'comment': '#',
                 'names': GENE2GO_COLUMNS}
     defaults.update(kwds)
-    result = pd.read_table(filename, **defaults)
+    result = pd.read_csv(filename, sep='\t', **defaults)
     
     retain_mask = result.tax_id == tax_id
     result.drop(result.index[~retain_mask], inplace=True)

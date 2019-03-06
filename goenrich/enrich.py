@@ -1,3 +1,4 @@
+import random
 import networkx as nx
 import numpy as np
 from scipy.stats import hypergeom
@@ -19,16 +20,21 @@ def analyze(O, query, background_attribute, **kwargs):
     :returns: pandas.DataFrame with results
     """
     options = {
-            'show' : 'top20'
+            'show' : 'top20',
+            'method' : 'benjamini-hochberg'
     }
     options.update(kwargs)
     _query = set(query)
     terms, nodes = zip(*O.nodes(data=True))
-    M = len({x for n in nodes for x in n[background_attribute]}) # all ids used
+    all_ids = {x for n in nodes for x in n[background_attribute]} 
+    M = len(all_ids) # all ids used
     N = len(_query)
     ps, xs, ns = calculate_pvalues(nodes, _query, background_attribute,
             M, **options)
-    qs, rejs = multiple_testing_correction(ps, **options)
+    if options['method'] == 'permutation':
+        qs, rejs = permuation_based_fdr(ps, N, all_ids, nodes, background_attribute, M, **options)
+    else:
+        qs, rejs = multiple_testing_correction(ps, **options)
     df = goenrich.export.to_frame(nodes, term=terms, q=qs, rejected=rejs,
             p=ps, x=xs, n=ns, M=M, N=N)
     if 'gvfile' in options:
@@ -45,6 +51,52 @@ def analyze(O, query, background_attribute, **kwargs):
                     'q' : q, 'n' : n, 'significant' : rej})
         goenrich.export.to_graphviz(G.reverse(copy=False), **options)
     return df
+
+def permuation_based_fdr(ps, N, all_ids, nodes, background_attribute, M,
+        permutations = 1000, alpha = 0.05, seed=42, **options):
+    """ Calculate a permuation based FDR
+
+    >>> goenrich.enrich.analyze(..., method='permuation', permutations=1000)
+
+    :param ps: p-values of the query
+    :param N: number of elements in the query
+    :param all_ids: all identifiers occuring in the background
+    :param nodes: nodes in the ontology
+    :param background_attribute: name of the background_attribute
+    :param M: total number of terms
+    :param permutations: number of permutations
+    :param alpha: test significance level
+    :param seed: seed for the random number generator. keep fixed for reproducible results
+    """
+    # TODO NaN o-values should be ignored in the analysis
+    # create random p-values
+    _ps_random = []
+    random.seed(seed)
+    with np.errstate(invalid='ignore'):
+        for i in range(0, permutations):
+            random_query = set(random.sample(all_ids, N))
+            _ps, _, _ = calculate_pvalues(nodes, random_query, background_attribute,
+                    M, **options)
+            _ps_random.append(_ps)
+    ps_random = np.concatenate(_ps_random)
+    indices_random = np.full_like(ps_random, -1, dtype=int)
+    # combine random and real p-values
+    ps_all = np.append(ps_random, ps)
+    indices_all = np.append(indices_random, np.arange(0, len(ps)))
+    order = np.argsort(ps_all)[::-1]
+    indices = indices_all[order]
+    # iterate over sorted p-values to deterime qs
+    tp = 0
+    fp = 0
+    qs = np.zeros_like(ps)
+    for i in indices:
+        if i < 0:
+            fp = fp + 1
+        else:
+            tp = tp + 1
+            qs[i] = min(1, fp/tp/permutations)
+    rej = qs < alpha
+    return qs, rej
 
 def propagate(O, values, attribute):
     """ Propagate values trough the hierarchy
@@ -114,7 +166,7 @@ def calculate_pvalues(nodes, query, background_attribute, M,
             vals.append((float('NaN'), x, n))
         else:
             vals.append((hypergeom.sf(x-1, M, n, N), x, n))
-    return zip(*vals)
+    return [np.array(x) for x in zip(*vals)]
 
 def multiple_testing_correction(ps, alpha=0.05,
         method='benjamini-hochberg', **kwargs):

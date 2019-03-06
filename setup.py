@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='goenrich',
-      version='1.10.2',
+      version='1.11',
       description='GO enrichment with python -- pandas meets networkx',
       long_description=readme(),
       classifiers=[

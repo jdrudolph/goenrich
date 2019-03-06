@@ -22,6 +22,19 @@ class TestGoenrich(unittest.TestCase):
             print('pygraphviz could not be imported')
         self.assertEqual(len(df.query('q<0.05')), 7)
 
+    def test_analysis_with_permutation_fdr(self):
+        O = goenrich.obo.ontology('db/go-basic.obo')
+        gene2go = goenrich.read.gene2go('db/gene2go.gz')
+        values = {k: set(v) for k,v in gene2go.groupby('GO_ID')['GeneID']}
+        background_attribute = 'gene2go'
+        goenrich.enrich.propagate(O, values, background_attribute)
+        query = gene2go['GeneID'].unique()[:20]
+        df = goenrich.enrich.analyze(O, query, background_attribute, method='permutation',
+                permutations = 10)
+        # TODO test permuation based FDR calculation
+        self.skipTest('NaN handling not finished')
+        self.assertEqual(len(df.query('q<0.05')), 7)
+
 
     def test_pval_correctness_fdr(self):
         O = networkx.DiGraph()
